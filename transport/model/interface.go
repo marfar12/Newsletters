@@ -4,13 +4,18 @@ import (
 	"context"
 	"database/sql"
 
-	svcmodel "newsletter/service/model"
+	"newsletter/service/model"
 )
 
-type Service interface {
-	CreateNewsletter(ctx context.Context, newsletter svcmodel.Newsletter, db *sql.DB) error
-	ListNewsletters(ctx context.Context, db *sql.DB) []svcmodel.Newsletter
-	GetNewsletter(ctx context.Context, id string, db *sql.DB) (svcmodel.Newsletter, error)
-	UpdateNewsletter(ctx context.Context, id string, newsletter svcmodel.Newsletter, db *sql.DB) (svcmodel.Newsletter, error)
+type NewsletterService interface {
+	CreateNewsletter(ctx context.Context, newsletter model.Newsletter, db *sql.DB) (model.Newsletter, error)
+	ListNewsletters(ctx context.Context, db *sql.DB) ([]model.Newsletter, error)
+	GetNewsletter(ctx context.Context, id string, db *sql.DB) (model.Newsletter, error)
+	UpdateNewsletter(ctx context.Context, id string, newsletter model.Newsletter, db *sql.DB) (model.Newsletter, error)
 	DeleteNewsletter(ctx context.Context, id string, db *sql.DB) error
+}
+
+type EditorService interface {
+	SignIn(ctx context.Context, editor model.Editor, db *sql.DB) (model.Editor, error)
+	SignUp(ctx context.Context, editor model.Editor, db *sql.DB) (model.Editor, error)
 }

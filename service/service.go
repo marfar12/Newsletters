@@ -1,7 +1,12 @@
 package service
 
-type Service struct{}
+type NewsletterService struct{}
+type EditorService struct{}
 
-func CreateService() Service {
-	return Service{}
+func CreateNewsletterService() NewsletterService {
+	return NewsletterService{}
+}
+
+func CreateEditorService() EditorService {
+	return EditorService{}
 }

@@ -3,84 +3,53 @@ package service
 import (
 	"context"
 	"database/sql"
-	"log"
 
+	dbmodel "newsletter/db/model"
+	dbNewsletters "newsletter/db/tables/newsletters"
 	"newsletter/service/errors"
 	"newsletter/service/model"
 )
 
-var (
+/*var (
 	newsletters = map[string]model.Newsletter{}
-)
+)*/
+
+/*func getField(v *model.Newsletter, field string) string{
+
+}*/
 
 // CreateUser saves user in map under email as a key.
-func (Service) CreateNewsletter(_ context.Context, newsletter model.Newsletter, db *sql.DB) error {
-	if _, exists := newsletters[newsletter.ID]; exists {
-		return errors.ErrNewsletterAlreadyExists
-	}
+func (NewsletterService) CreateNewsletter(_ context.Context, newsletter model.Newsletter, db *sql.DB) (model.Newsletter, error) {
+	newNewsletter, err := dbNewsletters.AddNewsletter(db, dbmodel.ToDBNewsletter(newsletter))
 
-	newsletters[newsletter.ID] = newsletter
-
-	return nil
+	return dbmodel.ToSvcNewsletter(newNewsletter), err
 }
 
 // ListUsers returns list of users in array of users.
-func (Service) ListNewsletters(_ context.Context, db *sql.DB) []model.Newsletter {
-	var newsletter model.Newsletter
-	var newsletters []model.Newsletter
-	rows, errrows := db.Query("SELECT * FROM newsletters")
-	if errrows != nil {
-		log.Fatal(errrows)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		err := rows.Scan(&newsletter.ID, &newsletter.Name, &newsletter.Desc, &newsletter.EditorId)
-		if err != nil {
-			log.Fatal(err)
-		}
-		newsletters = append(newsletters, newsletter)
-	}
-	return newsletters
+func (NewsletterService) ListNewsletters(_ context.Context, db *sql.DB) ([]model.Newsletter, error) {
+	newsletters, err := dbNewsletters.GetAllNewsletters(db)
+
+	return dbmodel.ToSvcNewsletters(newsletters), err
 }
 
 // GetUser returns an user with specified email.
-func (Service) GetNewsletter(_ context.Context, id string, db *sql.DB) (model.Newsletter, error) {
-	var newsletter model.Newsletter
-	row := db.QueryRow("SELECT * FROM newsletters WHERE newsletter_id = $1", id)
+func (NewsletterService) GetNewsletter(_ context.Context, id string, db *sql.DB) (model.Newsletter, error) {
+	newsletter, err := dbNewsletters.GetNewsletterById(db, id)
 
-	err := row.Scan(&newsletter.ID, &newsletter.Name, &newsletter.Desc, &newsletter.EditorId)
-	if err != nil {
-		return newsletter, errors.ErrNewsletterDoesntExists
-	}
-	return newsletter, nil
+	return dbmodel.ToSvcNewsletter(newsletter), err
 }
 
 // UpdateUser updates attributes of a specified user.
-func (Service) UpdateNewsletter(_ context.Context, id string, newsletter model.Newsletter, db *sql.DB) (model.Newsletter, error) {
-	oldUser, exists := newsletters[id]
-
-	if !exists {
-		return model.Newsletter{}, errors.ErrNewsletterDoesntExists
-	}
-
-	if oldUser.ID == newsletter.ID {
-		newsletters[id] = newsletter
-	} else {
-		newsletters[newsletter.ID] = newsletter
-
-		delete(newsletters, id)
-	}
+func (NewsletterService) UpdateNewsletter(_ context.Context, id string, newsletter model.Newsletter, db *sql.DB) (model.Newsletter, error) {
 
 	return newsletter, nil
 }
 
 // DeleteUser deletes user from memory.
-func (Service) DeleteNewsletter(_ context.Context, id string, db *sql.DB) error {
-	if _, exists := newsletters[id]; !exists {
-		return errors.ErrNewsletterDoesntExists
+func (NewsletterService) DeleteNewsletter(_ context.Context, id string, db *sql.DB) error {
+	err := dbNewsletters.DeleteNewsletterById(db, id)
+	if err != nil {
+		return errors.ErrDeletingNewsletter
 	}
-
-	delete(newsletters, id)
-
 	return nil
 }

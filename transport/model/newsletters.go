@@ -1,15 +1,14 @@
 package model
 
 import (
-	"database/sql"
 	svcmodel "newsletter/service/model"
 )
 
 type Newsletter struct {
-	ID       string         `json:"id"`
-	Name     string         `json:"name"`
-	Desc     sql.NullString `json:"desc"`
-	EditorId string         `json:"editor_id"`
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Desc     string `json:"desc"`
+	EditorId string `json:"editor_id"`
 }
 
 func ToSvcNewsletter(u Newsletter) svcmodel.Newsletter {

@@ -13,18 +13,20 @@ import (
 )
 
 type Handler struct {
-	Port    int
-	Mux     *chi.Mux
-	Service model.Service
-	DB      *sql.DB
+	Port              int
+	Mux               *chi.Mux
+	NewsletterService model.NewsletterService
+	EditorService     model.EditorService
+	DB                *sql.DB
 }
 
 func Initialize(cfg config.Config) *Handler {
 	h := &Handler{
-		Port:    cfg.Port,
-		Mux:     chi.NewRouter(),
-		Service: service.CreateService(),
-		DB:      db.Connect(cfg),
+		Port:              cfg.Port,
+		Mux:               chi.NewRouter(),
+		NewsletterService: service.CreateNewsletterService(),
+		EditorService:     service.CreateEditorService(),
+		DB:                db.Connect(cfg),
 	}
 
 	h.Mux.Use(commonMiddleware)
@@ -34,6 +36,13 @@ func Initialize(cfg config.Config) *Handler {
 		r.Post("/", h.CreateNewsletter)
 
 		r.Get("/{id}", h.GetNewsletter)
+		r.Patch("/{id}", h.UpdateNewsletter)
+		r.Delete("/{id}", h.DeleteNewsletter)
+	})
+
+	h.Mux.Route("/auth", func(r chi.Router) {
+		r.Post("/signin", h.SignIn)
+		r.Post("/signup", h.SignUp)
 	})
 
 	return h
