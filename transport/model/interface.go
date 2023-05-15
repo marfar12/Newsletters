@@ -13,9 +13,10 @@ type NewsletterService interface {
 	GetNewsletter(ctx context.Context, id string, db *sql.DB) (model.Newsletter, error)
 	UpdateNewsletter(ctx context.Context, id string, newsletter model.Newsletter, db *sql.DB) (model.Newsletter, error)
 	DeleteNewsletter(ctx context.Context, id string, db *sql.DB) error
-}
 
-type EditorService interface {
 	SignIn(ctx context.Context, editor model.Editor, db *sql.DB) (model.Editor, error)
 	SignUp(ctx context.Context, editor model.Editor, db *sql.DB) (model.Editor, error)
+
+	Subscribe(ctx context.Context, subscription model.Subscription, db *sql.DB) (model.Subscription, error)
+	Unsubscribe(ctx context.Context, unsubscribe_code string, db *sql.DB) error
 }

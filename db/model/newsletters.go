@@ -3,13 +3,15 @@ package model
 import (
 	"database/sql"
 	svcmodel "newsletter/service/model"
+
+	"github.com/google/uuid"
 )
 
 type Newsletter struct {
-	ID       string
+	ID       uuid.UUID
 	Name     string
 	Desc     sql.NullString
-	EditorId string
+	EditorId uuid.UUID
 }
 
 func ToSvcNewsletter(u Newsletter) svcmodel.Newsletter {

@@ -2,10 +2,12 @@ package model
 
 import (
 	svcmodel "newsletter/service/model"
+
+	"github.com/google/uuid"
 )
 
 type Editor struct {
-	ID       string
+	ID       uuid.UUID
 	Email    string
 	Password string
 }

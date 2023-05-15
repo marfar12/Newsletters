@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+
 	cfg, err := config.ReadConfigFromFile("../config.json")
 	if err != nil {
 		log.Fatal(err)

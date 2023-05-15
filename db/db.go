@@ -2,16 +2,15 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
+	"os"
+
 	"log"
-	"newsletter/config"
 )
 
 type Connection struct{}
 
-func Connect(cfg config.Config) *sql.DB {
-	connectionString := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", cfg.DbUser, cfg.DbPassword, cfg.DbHost, cfg.DbName)
-	db, dbErr := sql.Open("postgres", connectionString)
+func Connect() *sql.DB {
+	db, dbErr := sql.Open("postgres", os.Getenv("DB_CONNECTION_STRING"))
 	if dbErr != nil {
 		log.Fatal(dbErr)
 	}

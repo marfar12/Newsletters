@@ -1,14 +1,24 @@
 package model
 
+import (
+	"github.com/google/uuid"
+)
+
 type Newsletter struct {
-	ID       string
+	ID       uuid.UUID
 	Name     string
 	Desc     string
-	EditorId string
+	EditorId uuid.UUID
 }
 
 type Editor struct {
-	ID       string
+	ID       uuid.UUID
 	Email    string
 	Password string
+}
+
+type Subscription struct {
+	NewsletterId    uuid.UUID
+	Email           string
+	UnsubscribeCode string
 }

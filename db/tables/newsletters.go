@@ -1,4 +1,4 @@
-package newsletters
+package tables
 
 import (
 	"database/sql"
@@ -7,7 +7,7 @@ import (
 )
 
 func AddNewsletter(db *sql.DB, newsletter dbmodel.Newsletter) (dbmodel.Newsletter, error) {
-	row := db.QueryRow(`INSERT INTO newsletters (name, "desc", editor_id) VALUES($1, $2, $3) RETURNING *`, newsletter.Name, newsletter.Desc, newsletter.EditorId)
+	row := db.QueryRow(`INSERT INTO newsletters (newsletter_id, name, "desc", editor_id) VALUES($1, $2, $3, $4) RETURNING *`, newsletter.ID, newsletter.Name, newsletter.Desc, newsletter.EditorId)
 	err := row.Scan(&newsletter.ID, &newsletter.Name, &newsletter.Desc, &newsletter.EditorId)
 	if err != nil {
 		return dbmodel.Newsletter{}, errors.ErrCreatingNewsletter
@@ -61,8 +61,18 @@ func GetNewslettersByEditorId(db *sql.DB, editorId string) ([]dbmodel.Newsletter
 	return newsletters, nil
 }
 
-func DeleteNewsletterById(db *sql.DB, id string) error {
-	res, err := db.Exec("DELETE FROM newsletters WHERE newsletter_id = $1", id)
+func UpdateNewsletterById(editorId string, db *sql.DB, id string, newsletter dbmodel.Newsletter) (dbmodel.Newsletter, error) {
+	var resNewsletter dbmodel.Newsletter
+	row := db.QueryRow("UPDATE newsletters SET name = $1 WHERE newsletter_id = $2 AND editor_id = $3 RETURNING *", newsletter.Name, id, editorId)
+	err := row.Scan(&resNewsletter.ID, &resNewsletter.Name, &resNewsletter.Desc, &resNewsletter.EditorId)
+	if err != nil {
+		return newsletter, errors.ErrUpdatingNewsletter
+	}
+	return resNewsletter, nil
+}
+
+func DeleteNewsletterById(editorId string, db *sql.DB, id string) error {
+	res, err := db.Exec("DELETE FROM newsletters WHERE newsletter_id = $1 AND editor_id = $2", id, editorId)
 	if err == nil {
 		count, err := res.RowsAffected()
 		if err == nil {

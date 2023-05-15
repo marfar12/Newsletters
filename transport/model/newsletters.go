@@ -2,13 +2,15 @@ package model
 
 import (
 	svcmodel "newsletter/service/model"
+
+	"github.com/google/uuid"
 )
 
 type Newsletter struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Desc     string `json:"desc"`
-	EditorId string `json:"editor_id"`
+	ID       uuid.UUID `json:"id"`
+	Name     string    `json:"name"`
+	Desc     string    `json:"desc"`
+	EditorId uuid.UUID `json:"editor_id"`
 }
 
 func ToSvcNewsletter(u Newsletter) svcmodel.Newsletter {

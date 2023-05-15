@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS newsletters;
+
+DROP TABLE IF EXISTS editors;
+
+DROP TABLE IF EXISTS subscriptions;

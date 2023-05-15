@@ -79,3 +79,80 @@ func (h *Handler) DeleteNewsletter(w http.ResponseWriter, r *http.Request) {
 
 	util.WriteResponse(w, http.StatusNoContent, nil)
 }
+
+func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
+	var editor model.Editor
+	err := util.UnmarshalRequest(r, &editor)
+	if err != nil {
+		util.WriteErrResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err != nil {
+		util.WriteErrResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	signedInEditor, err := h.NewsletterService.SignIn(r.Context(), model.ToSvcEditor(editor), h.DB)
+	if err != nil {
+		util.WriteErrResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	netEditor := model.ToNetEditor(signedInEditor)
+	token := model.CreateToken(netEditor)
+
+	util.WriteResponse(w, http.StatusCreated, token)
+}
+
+func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
+	var editor model.Editor
+	err := util.UnmarshalRequest(r, &editor)
+	if err != nil {
+		util.WriteErrResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err != nil {
+		util.WriteErrResponse(w, http.StatusBadRequest, err)
+		return
+	}
+	signedUpEditor, err := h.NewsletterService.SignUp(r.Context(), model.ToSvcEditor(editor), h.DB)
+	if err != nil {
+		util.WriteErrResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	util.WriteResponse(w, http.StatusOK, model.ToNetEditor(signedUpEditor))
+}
+
+func (h *Handler) Subscribe(w http.ResponseWriter, r *http.Request) {
+	var subscription model.Subscription
+	err := util.UnmarshalRequest(r, &subscription)
+	if err != nil {
+		util.WriteErrResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err != nil {
+		util.WriteErrResponse(w, http.StatusBadRequest, err)
+		return
+	}
+	subscriptionRes, err := h.NewsletterService.Subscribe(r.Context(), model.ToSvcSubscription(subscription), h.DB)
+	if err != nil {
+		util.WriteErrResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	util.WriteResponse(w, http.StatusOK, model.ToNetSubscription(subscriptionRes))
+}
+
+func (h *Handler) Unsubscribe(w http.ResponseWriter, r *http.Request) {
+	err := h.NewsletterService.Unsubscribe(r.Context(), util.GetIdFromURL(r), h.DB)
+	if err != nil {
+		util.WriteErrResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	util.WriteResponse(w, http.StatusOK, "Unsubscribed successfully")
+}
