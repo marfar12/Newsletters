@@ -22,3 +22,9 @@ type Subscription struct {
 	Email           string
 	UnsubscribeCode string
 }
+
+type Issue struct {
+	NewsletterId uuid.UUID
+	Title        string
+	Content      string
+}

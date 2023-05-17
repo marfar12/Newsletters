@@ -19,4 +19,8 @@ var (
 	ErrInvalidJWTToken         = errors.New("invalid jwt token")
 	ErrCreatingSubscription    = errors.New("subscription could not be created")
 	ErrRemovingSubscription    = errors.New("subscription could not be removed")
+	ErrNewSubscriptionEmail    = errors.New("new subscription email could not be sent")
+	ErrRetrievingSubscriptions = errors.New("subscriptions could not be retrieved")
+	ErrNewIssueEmail           = errors.New("issue could not be published")
+	ErrUnauthorized            = errors.New("unauthorized")
 )

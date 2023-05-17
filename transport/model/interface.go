@@ -19,4 +19,6 @@ type NewsletterService interface {
 
 	Subscribe(ctx context.Context, subscription model.Subscription, db *sql.DB) (model.Subscription, error)
 	Unsubscribe(ctx context.Context, unsubscribe_code string, db *sql.DB) error
+
+	Publish(ctx context.Context, issue model.Issue, db *sql.DB) error
 }

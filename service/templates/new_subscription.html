@@ -232,11 +232,11 @@
                                   >
                                     <p style="margin: 0; margin-bottom: 16px">
                                       You subscribed to newsletter
-                                      <strong>{{name}}</strong>.
+                                      <strong>{{.NewsletterName}}</strong>.
                                     </p>
                                     <p style="margin: 0">
                                       If you want to unsubscribe, please click
-                                      on button below.
+                                      the button below.
                                     </p>
                                   </div>
                                 </td>
@@ -258,7 +258,7 @@
                                 <td class="pad">
                                   <div align="center" class="alignment">
                                     <a
-                                      href="localhost:3000/unsubscribe/code"
+                                      href="{{.UnsubscribeUrl}}"
                                       style="
                                         text-decoration: none;
                                         display: inline-block;

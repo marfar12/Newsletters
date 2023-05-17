@@ -35,3 +35,25 @@ func RemoveSubscription(db *sql.DB, unsubscribe_code string) error {
 	return errors.ErrRemovingSubscription
 
 }
+
+func GetSubscriptionsById(db *sql.DB, newsletterId string) ([]dbmodel.Subscription, error) {
+	var subscription dbmodel.Subscription
+	var subscriptions []dbmodel.Subscription
+
+	rows, err := db.Query(`SELECT * FROM subscriptions WHERE newsletter_id = $1`, newsletterId)
+
+	if err != nil {
+		return subscriptions, errors.ErrRetrievingSubscriptions
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&subscription.NewsletterId, &subscription.Email, &subscription.UnsubscribeCode)
+		if err != nil {
+			return subscriptions, errors.ErrRetrievingSubscriptions
+		}
+		subscriptions = append(subscriptions, subscription)
+	}
+	return subscriptions, nil
+
+}

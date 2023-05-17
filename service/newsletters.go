@@ -87,7 +87,6 @@ func (NewsletterService) SignIn(_ context.Context, editor model.Editor, db *sql.
 }
 
 func (NewsletterService) Subscribe(c context.Context, subscription model.Subscription, db *sql.DB) (model.Subscription, error) {
-	var templateId string = "d-c5b9fdcbbf0b4ca6a229a9c5204df7c9"
 	unsubscribeCode, _ := util.GenerateRandomString(32)
 
 	subscription.UnsubscribeCode = unsubscribeCode
@@ -104,7 +103,11 @@ func (NewsletterService) Subscribe(c context.Context, subscription model.Subscri
 		return model.Subscription{}, errors.ErrRetrievingNewsletter
 	}
 
-	util.SendEmail("Subscription confirmation", subscription.Email, newsletter.Name, unsubscribeCode, templateId)
+	_, err = util.NewSubscriptionEmail(subscription.Email, newsletter.Name, unsubscribeCode)
+
+	if err != nil {
+		return model.Subscription{}, errors.ErrNewSubscriptionEmail
+	}
 
 	return dbmodel.ToSvcSubscription(newSubscription), nil
 }
@@ -116,7 +119,33 @@ func (NewsletterService) Unsubscribe(c context.Context, unsubscribe_code string,
 		return errors.ErrRemovingSubscription
 	}
 
-	//util.SendEmail("Subscription confirmation", subscription.Email, newsletter.Name, unsubscribeCode, templateId)
+	return nil
+}
+
+func (NewsletterService) Publish(c context.Context, issue model.Issue, db *sql.DB) error {
+	_, claims, _ := jwtauth.FromContext(c)
+
+	subscribtions, err := dbtables.GetSubscriptionsById(db, issue.NewsletterId.String())
+
+	if err != nil {
+		return errors.ErrRetrievingSubscriptions
+	}
+
+	newsletter, err := dbtables.GetNewsletterById(db, issue.NewsletterId.String())
+
+	if err != nil {
+		return errors.ErrRetrievingNewsletter
+	}
+
+	if newsletter.EditorId.String() != claims["ID"].(string) {
+		return errors.ErrUnauthorized
+	}
+
+	_, err = util.NewIssueEmail(subscribtions, issue, dbmodel.ToSvcNewsletter(newsletter))
+
+	if err != nil {
+		return errors.ErrNewIssueEmail
+	}
 
 	return nil
 }

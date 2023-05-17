@@ -47,6 +47,13 @@ func Initialize(cfg config.Config) *Handler {
 
 	})
 
+	h.Mux.Group(func(r chi.Router) {
+		r.Use(jwtauth.Verifier(model.TokenAuth))
+		r.Use(jwtauth.Authenticator)
+
+		r.Post("/publish", h.Publish)
+	})
+
 	h.Mux.Route("/auth", func(r chi.Router) {
 		r.Post("/signin", h.SignIn)
 		r.Post("/signup", h.SignUp)
