@@ -87,7 +87,7 @@ func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
 	netEditor := model.ToNetEditor(signedInEditor)
 	token := model.CreateToken(netEditor)
 
-	util.WriteResponse(w, http.StatusCreated, token)
+	util.WriteResponse(w, http.StatusOK, token)
 }
 
 func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
@@ -104,7 +104,7 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.WriteResponse(w, http.StatusOK, model.ToNetEditor(signedUpEditor))
+	util.WriteResponse(w, http.StatusCreated, model.ToNetEditor(signedUpEditor))
 }
 
 func (h *Handler) Subscribe(w http.ResponseWriter, r *http.Request) {
@@ -121,7 +121,7 @@ func (h *Handler) Subscribe(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.WriteResponse(w, http.StatusOK, model.ToNetSubscription(subscriptionRes))
+	util.WriteResponse(w, http.StatusCreated, model.ToNetSubscription(subscriptionRes))
 }
 
 func (h *Handler) Unsubscribe(w http.ResponseWriter, r *http.Request) {
