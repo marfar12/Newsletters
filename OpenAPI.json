@@ -1,0 +1,393 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Newsletters",
+    "version": "1.0"
+  },
+  "servers": [{ "url": "http://localhost:3000" }],
+  "paths": {
+    "/auth/signin": {
+      "post": {
+        "summary": "Sign in",
+        "description": "Sign in",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/Credentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/signup": {
+      "post": {
+        "summary": "Sign up",
+        "description": "Sign up",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/Credentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Editor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/newsletter/{id}": {
+      "get": {
+        "summary": "Retrieve single newsletter",
+        "description": "Retrieve single newsletter",
+        "tags": ["Newsletter"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "ID of newsletter to be retrieved",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Newsletter"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update single newsletter",
+        "description": "Update single newsletter",
+        "tags": ["Newsletter"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "ID of newsletter to be updated",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Newsletter"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete single newsletter",
+        "description": "Delete single newsletter",
+        "tags": ["Newsletter"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "ID of newsletter to be deleted",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/newsletter": {
+      "get": {
+        "summary": "List newsletters",
+        "description": "List newsletters",
+        "tags": ["Newsletter"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Newsletter"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create newsletter",
+        "description": "Create newsletter",
+        "tags": ["Newsletter"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "desc": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Newsletter"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscribe": {
+      "post": {
+        "summary": "Subscribe to newsletter",
+        "description": "Subscribe to newsletter",
+        "tags": ["Subscription"],
+        "parameters": [{ "name": "code" }],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Subscription"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/unsubscribe/{code}": {
+      "get": {
+        "summary": "Unsubscribe from newsletter",
+        "description": "Unsubscribe from newsletter",
+        "tags": ["Subscription"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Unsubscribed successfully"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publish": {
+      "post": {
+        "summary": "Publish new issue to newsletter",
+        "description": "Publish new issue to newsletter",
+        "tags": ["Issue"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/Issue"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Issue published successfully"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Newsletter": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "desc": {
+            "type": "string"
+          },
+          "editor_id": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "id": "2ea17b4a-6ab4-4bd2-af2a-f50c89e049e5",
+          "name": "newsletter name",
+          "desc": "newsletter desc",
+          "editor_id": "fc17d40c-723c-4f9c-ade8-289058ee5014"
+        }
+      },
+      "Token": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjI4MzE0ZTU1LWU2MGQtNDEyZS1iYzI3LWNjOWVhZmM0ZmFlYSIsImV4cCI6MTY4NDM1NDIzNn0.PbnuBxCRqdjJ6UZhAjvPU1UAnaHzW_Jk3TUEZEqU76g"
+        }
+      },
+      "Credentials": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "email": "example@example.com",
+          "password": "verystrongpassword"
+        }
+      },
+      "Editor": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "id": "fc17d40c-723c-4f9c-ade8-289058ee5014",
+          "email": "example@example.com"
+        }
+      },
+      "Subscription": {
+        "type": "object",
+        "properties": {
+          "newsletter_id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "newsletter_id": "2ea17b4a-6ab4-4bd2-af2a-f50c89e049e5",
+          "email": "example@example.com"
+        }
+      },
+      "Issue": {
+        "type": "object",
+        "properties": {
+          "newsletter_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "newsletter_id": "2ea17b4a-6ab4-4bd2-af2a-f50c89e049e5",
+          "title": "New issue",
+          "content": "Content of the issue"
+        }
+      }
+    }
+  }
+}
