@@ -4,7 +4,10 @@
     "title": "Newsletters",
     "version": "1.0"
   },
-  "servers": [{ "url": "http://localhost:3000" }],
+  "servers": [
+    { "url": "https://farm05-newsletters.onrender.com" },
+    { "url": "http://localhost:3000" }
+  ],
   "paths": {
     "/auth/signin": {
       "post": {
