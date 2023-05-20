@@ -7,12 +7,7 @@ import (
 )
 
 type Config struct {
-	Port       int
-	DbHost     string
-	DbPort     int
-	DbUser     string
-	DbPassword string
-	DbName     string
+	Port int
 }
 
 func ReadConfigFromFile(path string) (Config, error) {
@@ -22,12 +17,7 @@ func ReadConfigFromFile(path string) (Config, error) {
 	}
 
 	cfg := Config{
-		Port:       viper.GetInt("port"),
-		DbHost:     viper.GetString("db_host"),
-		DbPort:     viper.GetInt("db_port"),
-		DbUser:     viper.GetString("db_user"),
-		DbPassword: viper.GetString("db_password"),
-		DbName:     viper.GetString("db_name"),
+		Port: viper.GetInt("port"),
 	}
 
 	return cfg, nil
