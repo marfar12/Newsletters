@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 
 	_ "github.com/lib/pq"
 
@@ -12,7 +14,11 @@ import (
 )
 
 func main() {
-	cfg, err := config.ReadConfigFromFile("config.json")
+	configPath := "config.json"
+	if !strings.Contains(os.Getenv("BASE_URL"), "localhost") {
+		configPath = "../" + configPath
+	}
+	cfg, err := config.ReadConfigFromFile(configPath)
 	if err != nil {
 		log.Fatal(err)
 	}
